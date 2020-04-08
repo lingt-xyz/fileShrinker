@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"flag"
 	"log"
-	"math/rand"
 	"os"
 	"strconv"
 )
@@ -40,7 +39,7 @@ func shrink(fileName string, percentage float64, skip int) {
 	}
 	defer sourceFile.Close()
 
-	targetFileName := fileName + strconv.FormatFloat(percentage, 'f', 2, 64)
+	targetFileName := fileName + "." + strconv.FormatFloat(percentage, 'f', 2, 64)
 	targetFile, err := os.Create(targetFileName)
 	if err != nil {
 		log.Fatalf("Failed to create target file: %v, got error: %v", targetFileName, err)
@@ -50,16 +49,13 @@ func shrink(fileName string, percentage float64, skip int) {
 	scanner := bufio.NewScanner(sourceFile)
 	i := 0
 	for scanner.Scan() {
-		if i <= skip {
-			_, _ = targetFile.WriteString(scanner.Text())
+		if i < skip {
+			_, _ = targetFile.WriteString(scanner.Text() + "\n")
+			i++
 		} else {
-
+			if randomize(percentage) {
+				_, _ = targetFile.WriteString(scanner.Text() + "\n")
+			}
 		}
-		i++
 	}
-	return
-}
-
-func wonLottery(percentage float64){
-rand.Int()
 }
