@@ -9,8 +9,8 @@ import (
 )
 
 func main() {
-	fileName := flag.String("i", "", "fileName to be shrunk")
-	percentage := flag.Float64("p", 0.5, "percentage of the fileName to keep")
+	fileName := flag.String("i", "", "fileName of the file to be shrunk")
+	percentage := flag.Float64("p", 0.5, "percentage of the file to keep")
 	skip := flag.Int("s", 0, "lines to skip")
 	flag.Parse()
 
