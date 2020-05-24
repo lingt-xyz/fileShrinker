@@ -53,27 +53,49 @@ func shrink(fileName string, percentage float64, keepHeader, separate bool) {
 		defer separateFile.Close()
 	}
 
-	scanner := bufio.NewScanner(sourceFile)
-	var header string
-	var headerScanned bool
-	for scanner.Scan() {
-		if keepHeader && !headerScanned {
-			header = scanner.Text()
-			headerScanned = true
-			_, _ = targetFile.WriteString(header + "\n")
-			_, _ = separateFile.WriteString(header + "\n")
-			continue
+	// Scanner cannot deal with "too long token"
+	//scanner := bufio.NewScanner(sourceFile)
+	//var header string
+	//var headerScanned bool
+	//for scanner.Scan() {
+	//	if keepHeader && !headerScanned {
+	//		header = scanner.Text()
+	//		headerScanned = true
+	//		_, _ = targetFile.WriteString(header + "\n")
+	//		_, _ = separateFile.WriteString(header + "\n")
+	//		continue
+	//	}
+	//	if randomize(percentage) {
+	//		_, _ = targetFile.WriteString(scanner.Text() + "\n")
+	//	} else {
+	//		if separate {
+	//			_, _ = separateFile.WriteString(scanner.Text() + "\n")
+	//		}
+	//	}
+	//}
+	//
+	//if err := scanner.Err(); err != nil {
+	//	log.Fatal(err)
+	//}
+
+	reader := bufio.NewReader(sourceFile)
+
+	if keepHeader{
+		header, _ := reader.ReadString('\n')
+		_, _ = targetFile.WriteString(header)
+		_, _ = separateFile.WriteString(header)
+	}
+	for{
+		s, err := reader.ReadString('\n')
+		if err != nil{
+			break
 		}
 		if randomize(percentage) {
-			_, _ = targetFile.WriteString(scanner.Text() + "\n")
+			_, _ = targetFile.WriteString(s)
 		} else {
 			if separate {
-				_, _ = separateFile.WriteString(scanner.Text() + "\n")
+				_, _ = separateFile.WriteString(s)
 			}
 		}
-	}
-
-	if err := scanner.Err(); err != nil {
-		log.Fatal(err)
 	}
 }
